@@ -1,0 +1,54 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    
+    needs: test
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    env:
+      IMAGE_NAME: gcr.io/${{secrets.PROJECT_ID}}/attendance-system-backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{secrets.WORKLOAD_IDENTITY_PROVIDER_LOCATION}}
+          service_account: ${{secrets.SERVICE_ACCOUNT}}
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet
+
+      - name: Build Docker image
+        run: docker build . -t $IMAGE_NAME --cache-from $IMAGE_NAME
+
+      - name: Push Docker image
+        run: docker push $IMAGE_NAME
+
+      - id: deploy
+        name: Deploy Docker image
+        uses: "google-github-actions/deploy-cloudrun@v2"
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          region: asia-east1
+          service: attendance-system-backend
+          flags: --port=3000
+
+      - name: Test URL
+        run: curl "${{ steps.deploy.outputs.url }}"
