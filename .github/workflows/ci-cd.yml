@@ -10,9 +10,6 @@ on:
 
 jobs:
   deploy:
-    
-    needs: test
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -20,7 +17,7 @@ jobs:
       id-token: "write"
 
     env:
-      IMAGE_NAME: gcr.io/${{secrets.PROJECT_ID}}/attendance-system-backend
+      IMAGE_NAME: gcr.io/${{secrets.PROJECT_ID}}/attendance-system-frontend
 
     steps:
       - name: Checkout repository
@@ -47,7 +44,7 @@ jobs:
         with:
           image: ${{ env.IMAGE_NAME }}
           region: asia-east1
-          service: attendance-system-backend
+          service: attendance-system-frontend
           flags: --port=3000
 
       - name: Test URL
