@@ -104,17 +104,10 @@ export default function Sidebar() {
           </li>
         ))}
       </ul>
-      <form
-        action={async () => {
-          "use server";
-          await signOut();
-        }}
-      >
-        <button className={styles.logout}>
-          <MdLogout />
-          Logout
-        </button>
-      </form>
+      <button className={styles.logout}>
+        <MdLogout/>
+        Logout
+      </button>
     </div>
   );
   }
