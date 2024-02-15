@@ -2,6 +2,7 @@ import styles from "@/app/ui/dashboard/users/users.module.css"
 import Search from "@/app/ui/dashboard/search/search";
 import Link from "next/link";
 import Image from "next/image";
+import Pagination from "@/app/ui/dashboard/pagination/pagination";
 
 export default function UsersPage() {
   return (
@@ -57,7 +58,8 @@ export default function UsersPage() {
               </td>
             </tr>
         </tbody>
-      </table>    
+      </table>
+      <Pagination/>
     </div>
   );
 }
