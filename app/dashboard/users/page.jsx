@@ -3,8 +3,11 @@ import Search from "@/app/ui/dashboard/search/search";
 import Link from "next/link";
 import Image from "next/image";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
+import { fetchUsers } from "@/app/lib/api";
 
-export default function UsersPage() {
+export default async function UsersPage() {
+  const users = await fetchUsers()
+
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -25,38 +28,41 @@ export default function UsersPage() {
           </tr>
         </thead>
         <tbody>
-            <tr>
+          {users.map((user) => (
+            <tr key={user.id}>
               <td>
                 <div className={styles.user}>
                   <Image
-                    src="/noavatar.png"
+                    src={user.img || "/noavatar.png"}
                     alt=""
                     width={40}
                     height={40}
                     className={styles.userImage}
                   />
-                  John
+                  {user.username}
                 </div>
               </td>
-              <td>test@gmail.com</td>
-              <td>2024-01-01</td>
-              <td>Admin</td>
-              <td>active</td>
+              <td>{user.email}</td>
+              <td>{user.created_at?.toString().slice(0, 10)}</td>
+              <td>{user.isAdmin ? "Admin" : "Employee"}</td>
+              <td>{user.isActive ? "active" : "passive"}</td>
               <td>
                 <div className={styles.buttons}>
-                  <Link href="/dashboard/users/test">
+                  <Link href={`/dashboard/users/${user.id}`}>
                     <button className={`${styles.button} ${styles.view}`}>
                       View
                     </button>
                   </Link>
-                  <Link href="/">
+                  <form action="">
+                    <input type="hidden" name="id" value={(user.id)} />
                     <button className={`${styles.button} ${styles.delete}`}>
-                    Delete
+                      Delete
                     </button>
-                  </Link>
+                  </form>
                 </div>
               </td>
             </tr>
+          ))}
         </tbody>
       </table>
       <Pagination/>
