@@ -1,13 +1,15 @@
-import { fetchUsers } from "@/app/lib/data";
+import { fetchUsers } from "@/app/lib/api";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 import Search from "@/app/ui/dashboard/search/search";
 import styles from "@/app/ui/dashboard/users/users.module.css";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function UsersPage({searchParams}) {
-  const q = searchParams?.query || "";
-  const users = await fetchUsers(q);
+const UsersPage = async ({ searchParams }) => {
+  const q = searchParams?.q || "";
+  const page = searchParams?.page || 1;
+  const users = await fetchUsers(q, page);
+  const count = 1 //todo get from backend
 
   return (
     <div className={styles.container}>
@@ -66,7 +68,9 @@ export default async function UsersPage({searchParams}) {
           ))}
         </tbody>
       </table>
-      <Pagination/>
+      <Pagination count={count} />
     </div>
   );
-}
+};
+
+export default UsersPage;
