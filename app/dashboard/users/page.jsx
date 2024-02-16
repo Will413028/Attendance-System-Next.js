@@ -1,12 +1,13 @@
-import styles from "@/app/ui/dashboard/users/users.module.css"
-import Search from "@/app/ui/dashboard/search/search";
-import Link from "next/link";
-import Image from "next/image";
+import { fetchUsers } from "@/app/lib/data";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
-import { fetchUsers } from "@/app/lib/api";
+import Search from "@/app/ui/dashboard/search/search";
+import styles from "@/app/ui/dashboard/users/users.module.css";
+import Image from "next/image";
+import Link from "next/link";
 
-export default async function UsersPage() {
-  const users = await fetchUsers()
+export default async function UsersPage({searchParams}) {
+  const q = searchParams?.query || "";
+  const users = await fetchUsers(q);
 
   return (
     <div className={styles.container}>
