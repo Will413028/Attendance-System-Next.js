@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from "@/app/ui/dashboard/users/addUser/addUser.module.css";
-import ax from 'axios';
+import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,7 +15,7 @@ const AddUserPage = () => {
     phone: '',
     role: 'Employee',
   });
-
+  const [error, setError] = useState('');
   const router = useRouter()
 
   const handleChange = (e) => {
@@ -29,19 +29,25 @@ const AddUserPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await ax.post(`${API_URL}/users`, formData);
+      await axios.post(`${API_URL}/users`, formData);
       router.push('/dashboard/users');
     } catch (error) {
       console.error("create user failed", error);
-      throw new Error(`create user failed, ${error}`);
+      if (error.response && error.response.data) {
+        const errorMessage = error.response.data.detail || 'Creating user failed';
+        setError(errorMessage);
+      } else {
+        setError('Creating user failed. Please check your network connection and try again later.');
+      }
     }
   };
 
   return (
     <div className={styles.container}>
+      {error && <p className={styles.error}>{error}</p>}
       <form onSubmit={handleSubmit} className={styles.form}>
-        <input type="text" placeholder="name" value={formData.name} name="name" onChange={handleChange} required/>
-        <input type="account" placeholder="account" name="account" value={formData.account} onChange={handleChange} required/>
+        <input type="text" placeholder="name" value={formData.name} name="name" onChange={handleChange} required />
+        <input type="text" placeholder="account" name="account" value={formData.account} onChange={handleChange} required />
         <input
           type="password"
           placeholder="password"
@@ -50,8 +56,8 @@ const AddUserPage = () => {
           onChange={handleChange}
           required
         />
-        <input type="email" placeholder="email" value={formData.email} name="email" onChange={handleChange}/>
-        <input type="phone" placeholder="phone" value={formData.phone} name="phone" onChange={handleChange}/>
+        <input type="email" placeholder="email" value={formData.email} name="email" onChange={handleChange} />
+        <input type="tel" placeholder="phone" value={formData.phone} name="phone" onChange={handleChange} />
         <select id="role" name="role" value={formData.role} onChange={handleChange}>
           <option value="Employee">Employee</option>
           <option value="HR">HR</option>
