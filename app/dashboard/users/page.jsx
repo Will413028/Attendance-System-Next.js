@@ -1,12 +1,9 @@
-"use client"
 import { fetchUsers } from "@/app/lib/api";
+import { deleteUser } from "@/app/lib/action";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 import Search from "@/app/ui/dashboard/search/search";
 import styles from "@/app/ui/dashboard/users/users.module.css";
 import Link from "next/link";
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const UsersPage = async ({ searchParams }) => {
   const q = searchParams?.q || "";
@@ -15,17 +12,6 @@ const UsersPage = async ({ searchParams }) => {
   const count = data.total_count
   const users = data.data
 
-  const deleteUser = async (userId) => {
-    try {
-      await axios.delete(`${API_URL}/users/${userId}`);
-      alert('user already deleted');
-      window.location.reload();
-    } catch (error) {
-      console.error('Delete user failed', error);
-      alert('Delete user failed');
-    }
-  };
-  
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -64,9 +50,12 @@ const UsersPage = async ({ searchParams }) => {
                       View
                     </button>
                   </Link>
-                    <button onClick={() => deleteUser(user.id)} className={`${styles.button} ${styles.delete}`}>
-                    Delete
+                  <form action={deleteUser}>
+                    <input type="hidden" name="id" value={(user.id)} />
+                    <button className={`${styles.button} ${styles.delete}`}>
+                      Delete
                     </button>
+                  </form>
                 </div>
               </td>
             </tr>
