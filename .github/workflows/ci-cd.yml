@@ -18,7 +18,7 @@ jobs:
 
     env:
       IMAGE_NAME: gcr.io/${{secrets.PROJECT_ID}}/attendance-system-frontend
-      ATTENDANCE_SYSTEM_API_URL: ${{ secrets.ATTENDANCE_SYSTEM_API_URL }}
+      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
 
     steps:
       - name: Checkout repository
@@ -34,7 +34,7 @@ jobs:
         run: gcloud auth configure-docker --quiet
 
       - name: Build Docker image
-        run: docker build . -t $IMAGE_NAME --build-arg ATTENDANCE_SYSTEM_API_URL=${{ env.ATTENDANCE_SYSTEM_API_URL }} --cache-from $IMAGE_NAME
+        run: docker build . -t $IMAGE_NAME --build-arg NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }} --cache-from $IMAGE_NAME
 
       - name: Push Docker image
         run: docker push $IMAGE_NAME

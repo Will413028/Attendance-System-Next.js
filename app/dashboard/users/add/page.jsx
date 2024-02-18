@@ -1,38 +1,61 @@
+"use client"
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from "@/app/ui/dashboard/users/addUser/addUser.module.css";
+import ax from 'axios';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const AddUserPage = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    account: '',
+    password: '',
+    email: '',
+    phone: '',
+    role: 'Employee',
+  });
+
+  const router = useRouter()
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await ax.post(`${API_URL}/users`, formData);
+      router.push('/dashboard/users');
+    } catch (error) {
+      console.error("create user failed", error);
+      throw new Error(`create user failed, ${error}`);
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <form action="" className={styles.form}>
-        <input type="text" placeholder="username" name="username" required />
-        <input type="email" placeholder="email" name="email" required />
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input type="text" placeholder="name" value={formData.name} name="name" onChange={handleChange} required/>
+        <input type="account" placeholder="account" name="account" value={formData.account} onChange={handleChange} required/>
         <input
           type="password"
           placeholder="password"
           name="password"
+          value={formData.password}
+          onChange={handleChange}
           required
         />
-        <input type="phone" placeholder="phone" name="phone" />
-        <select name="isAdmin" id="isAdmin">
-          <option value={false}>
-            Is Admin?
-          </option>
-          <option value={true}>Yes</option>
-          <option value={false}>No</option>
+        <input type="email" placeholder="email" value={formData.email} name="email" onChange={handleChange}/>
+        <input type="phone" placeholder="phone" value={formData.phone} name="phone" onChange={handleChange}/>
+        <select id="role" name="role" value={formData.role} onChange={handleChange}>
+          <option value="Employee">Employee</option>
+          <option value="HR">HR</option>
         </select>
-        <select name="isActive" id="isActive">
-          <option value={true}>
-            Is Active?
-          </option>
-          <option value={true}>Yes</option>
-          <option value={false}>No</option>
-        </select>
-        <textarea
-          name="address"
-          id="address"
-          rows="16"
-          placeholder="Address"
-        ></textarea>
         <button type="submit">Submit</button>
       </form>
     </div>
