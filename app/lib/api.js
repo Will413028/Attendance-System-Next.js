@@ -1,3 +1,5 @@
+import ax from 'axios';
+
 const API_URL = process.env.ATTENDANCE_SYSTEM_API_URL;
 
 async function fetchAPI(endpoint, { method = 'GET', body = null, headers = {} } = {}) {
@@ -27,14 +29,13 @@ async function fetchAPI(endpoint, { method = 'GET', body = null, headers = {} } 
 }
 
 export const fetchUsers = async (q, page) => {
-    const endpoint = `${API_URL}/users`;
+    const endpoint = `${API_URL}/users?user_name=${q}&page=${page}`;
     try {
-      const response = await fetch(endpoint);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
+      const response = await ax(endpoint);
+
+      if (response.status !== 200) throw new Error(`HTTP error! status: ${response.status}`);
+
+      return response.data
     } catch (error) {
       console.error("Fetching data failed:", error);
       throw error;
@@ -42,16 +43,15 @@ export const fetchUsers = async (q, page) => {
 };
 
 export const fetchAttendances = async (q, page) => {
-    const endpoint = `${API_URL}/attendances`;
-    try {
-      const response = await fetch(endpoint);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Fetching data failed:", error);
-      throw error;
-    }
+  const endpoint = `${API_URL}/attendances?attendance_type=${q}&page=${page}`;
+  try {
+    const response = await ax(endpoint);
+
+    if (response.status !== 200) throw new Error(`HTTP error! status: ${response.status}`);
+
+    return response.data
+  } catch (error) {
+    console.error("Fetching data failed:", error);
+    throw error;
+  }
 };

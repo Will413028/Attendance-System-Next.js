@@ -8,8 +8,9 @@ import Link from "next/link";
 const UsersPage = async ({ searchParams }) => {
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
-  const users = await fetchUsers(q, page);
-  const count = 1 //todo get from backend
+  const data = await fetchUsers(q, page);
+  const count = data.total_count
+  const users = data.data
 
   return (
     <div className={styles.container}>

@@ -1,14 +1,21 @@
+import { fetchAttendances } from "@/app/lib/api";
 import styles from "@/app/ui/dashboard/products/products.module.css"
 import Search from "@/app/ui/dashboard/search/search";
 import Link from "next/link";
 import Image from "next/image";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 
-export default function ProductsPage() {
+export default async function ProductsPage({searchParams}) {
+  const q = searchParams?.q || "";
+  const page = searchParams?.page || 1;
+  const data = await fetchAttendances(q, page);
+  const count = data.total_count
+  const attendance_records = data.data
+
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <Search placeholder="Search for a product..." />
+        <Search placeholder="Search for an attendance..." />
         <Link href="/dashboard/products/add">
           <button className={styles.addButton}>Add New</button>
         </Link>
@@ -25,26 +32,20 @@ export default function ProductsPage() {
           </tr>
         </thead>
         <tbody>
-            <tr>
+          {attendance_records.map((attendance_record) => (
+            <tr key={attendance_records.id}>
               <td>
                 <div className={styles.product}>
-                  <Image
-                    src="/noproduct.jpg"
-                    alt=""
-                    width={40}
-                    height={40}
-                    className={styles.userImage}
-                  />
-                  IPhone
+                  {attendance_record.attendance_date}
                 </div>
               </td>
-              <td>Desc</td>
-              <td>#999</td>
-              <td>2024-01-01</td>
-              <td>222</td>
+              <td>{attendance_record.attendance_date}</td>
+              <td>{attendance_record.attendance_date}</td>
+              <td>{attendance_record.attendance_date}</td>
+              <td>{attendance_record.attendance_date}</td>
               <td>
                 <div className={styles.buttons}>
-                <Link href="/dashboard/products/test">
+                <Link href={`/dashboard/products/${attendance_record.id}`}>
                     <button className={`${styles.button} ${styles.view}`}>
                       View
                     </button>
@@ -57,9 +58,10 @@ export default function ProductsPage() {
                 </div>
               </td>
             </tr>
+          ))}
         </tbody>
       </table>
-      <Pagination/>
+      <Pagination count={count} />
     </div>
   );
 }
