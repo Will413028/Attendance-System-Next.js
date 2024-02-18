@@ -2,7 +2,6 @@ import { fetchAttendances } from "@/app/lib/api";
 import styles from "@/app/ui/dashboard/products/products.module.css"
 import Search from "@/app/ui/dashboard/search/search";
 import Link from "next/link";
-import Image from "next/image";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 
 export default async function ProductsPage({searchParams}) {
