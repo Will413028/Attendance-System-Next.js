@@ -16,6 +16,20 @@ export const fetchUsers = async (q, page) => {
     }
 };
 
+export const fetchUser = async (id) => {
+  const endpoint = `${API_URL}/users/${id}`;
+  try {
+    const response = await ax(endpoint);
+
+    if (response.status !== 200) throw new Error(`HTTP error! status: ${response.status}`);
+
+    return response.data
+  } catch (error) {
+    console.error("Fetching data failed:", error);
+    throw error;
+  }
+};
+
 export const fetchAttendances = async (q, page) => {
   const endpoint = `${API_URL}/attendances?attendance_type=${q}&page=${page}`;
   try {

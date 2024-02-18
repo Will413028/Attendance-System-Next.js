@@ -1,36 +1,38 @@
+import { updateUser } from "@/app/lib/actions";
+import { fetchUser } from "@/app/lib/api";
 import styles from "@/app/ui/dashboard/users/singleUser/singleUser.module.css";
 import Image from "next/image";
 
 const SingleUserPage = async ({ params }) => {
+  
+  const { id } = params;
+  const user = await fetchUser(id);
+
   return (
     <div className={styles.container}>
       <div className={styles.infoContainer}>
         <div className={styles.imgContainer}>
-          <Image src="/noavatar.png" alt="" fill />
+          <Image src={user.img || "/noavatar.png"} alt="" fill />
         </div>
-        John
+        {user.username}
       </div>
       <div className={styles.formContainer}>
-        <form action='' className={styles.form}>
+        <form action={updateUser} className={styles.form}>
+          <input type="hidden" name="id" value={user.id}/>
           <label>Username</label>
-          <input type="text" name="username" placeholder="John" />
+          <input type="text" name="name" placeholder={user.name} />
+          <label>Account</label>
+          <input type="text" name="account" placeholder={user.account} />
           <label>Email</label>
-          <input type="email" name="email" placeholder="John@email" />
+          <input type="email" name="email" placeholder={user.email} />
           <label>Password</label>
           <input type="password" name="password" />
           <label>Phone</label>
-          <input type="text" name="phone" placeholder="1111111" />
-          <label>Address</label>
-          <textarea type="text" name="address" placeholder="test address" />
-          <label>Is Admin?</label>
-          <select name="isAdmin" id="isAdmin">
-            <option value={true} >Yes</option>
-            <option value={false} >No</option>
-          </select>
-          <label>Is Active?</label>
-          <select name="isActive" id="isActive">
-            <option value={true} >Yes</option>
-            <option value={false} >No</option>
+          <input type="text" name="phone" placeholder={user.phone} />
+          <label>Role</label>
+          <select name="role" id="role">
+            <option value="Employee">Employee</option>
+            <option value="HR">HR</option>
           </select>
           <button>Update</button>
         </form>
