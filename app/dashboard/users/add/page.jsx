@@ -2,9 +2,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from "@/app/ui/dashboard/users/addUser/addUser.module.css";
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const AddUserPage = () => {
   const [formData, setFormData] = useState({
@@ -25,20 +22,24 @@ const AddUserPage = () => {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/users`, formData);
+      const response = await fetch('/api/createUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        throw new Error('Creating user failed');
+      }
+      const data = await response.json();
       router.push('/dashboard/users');
     } catch (error) {
       console.error("create user failed", error);
-      if (error.response && error.response.data) {
-        const errorMessage = error.response.data.detail || 'Creating user failed';
-        setError(errorMessage);
-      } else {
-        setError('Creating user failed. Please check your network connection and try again later.');
-      }
+      setError('Creating user failed. Please check your network connection and try again later.');
     }
   };
 
