@@ -4,7 +4,7 @@ import Search from "@/app/ui/dashboard/search/search";
 import Link from "next/link";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 
-export default async function ProductsPage({searchParams}) {
+export default async function AttendancesPage({searchParams}) {
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
   const data = await fetchAttendances(q, page);
@@ -15,36 +15,29 @@ export default async function ProductsPage({searchParams}) {
     <div className={styles.container}>
       <div className={styles.top}>
         <Search placeholder="Search for an attendance..." />
-        <Link href="/dashboard/products/add">
+        <Link href="/dashboard/attendances/add">
           <button className={styles.addButton}>Add New</button>
         </Link>
       </div>
       <table className={styles.table}>
         <thead>
           <tr>
-            <td>Title</td>
-            <td>Description</td>
-            <td>Price</td>
-            <td>Created At</td>
-            <td>Stock</td>
-            <td>Action</td>
+            <td>Attendance Date</td>
+            <td>Time In</td>
+            <td>Time Out</td>
+            <td>Attendance Type</td>
           </tr>
         </thead>
         <tbody>
           {attendance_records.map((attendance_record) => (
             <tr key={attendance_records.id}>
-              <td>
-                <div className={styles.product}>
-                  {attendance_record.attendance_date}
-                </div>
-              </td>
               <td>{attendance_record.attendance_date}</td>
-              <td>{attendance_record.attendance_date}</td>
-              <td>{attendance_record.attendance_date}</td>
-              <td>{attendance_record.attendance_date}</td>
+              <td>{attendance_record.time_in}</td>
+              <td>{attendance_record.time_out}</td>
+              <td>{attendance_record.attendance_type}</td>
               <td>
                 <div className={styles.buttons}>
-                <Link href={`/dashboard/products/${attendance_record.id}`}>
+                <Link href={`/dashboard/attendances/${attendance_record.id}`}>
                     <button className={`${styles.button} ${styles.view}`}>
                       View
                     </button>
