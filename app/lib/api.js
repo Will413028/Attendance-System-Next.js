@@ -43,3 +43,17 @@ export const fetchAttendances = async (q, page) => {
     throw error;
   }
 };
+
+export const fetchAttendance = async (id) => {
+  const endpoint = `${API_URL}/attendances/${id}`;
+  try {
+    const response = await ax(endpoint);
+
+    if (response.status !== 200) throw new Error(`HTTP error! status: ${response.status}`);
+
+    return response.data
+  } catch (error) {
+    console.error("Fetching data failed:", error);
+    throw error;
+  }
+};
